@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.loki2302.program.Statement;
 
-
 public class StatementResult {
 	public boolean ok;
 	public Statement statement;

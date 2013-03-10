@@ -1,5 +1,6 @@
 package com.loki2302.parser;
 
+
 import org.parboiled.BaseParser;
 import org.parboiled.Rule;
 
@@ -11,16 +12,20 @@ import com.loki2302.dom.expression.literal.DOMIntLiteralExpression;
 import com.loki2302.dom.expression.literal.DOMNullLiteralExpression;
 import com.loki2302.dom.expression.literal.DOMTrueBoolLiteralExpression;
 import com.loki2302.dom.statement.DOMExpressionStatement;
+import com.loki2302.dom.statement.DOMStatement;
 import com.loki2302.dom.statement.construct.DOMBreakStatement;
 
-public class GrammarDefinition extends BaseParser<DOMElement> {
+public class LanguageParser extends BaseParser<DOMElement> {	
 	public Rule program() {
+		DOMProgramBuilder programBuilder = new DOMProgramBuilder();
 		return Sequence(
 				OneOrMore(
 						statement(),
+						ACTION(programBuilder.appendStatement((DOMStatement)pop())),
 						";"),
-				EOI);
-	}
+				EOI,
+				push(programBuilder.build()));
+	}	
 	
 	public Rule statement() {
 		return FirstOf(

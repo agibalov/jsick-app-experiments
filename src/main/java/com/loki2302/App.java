@@ -1,35 +1,30 @@
 package com.loki2302;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.loki2302.dom.DOMNamedTypeDescriptor;
 import com.loki2302.dom.DOMProgram;
-import com.loki2302.dom.expression.DOMAddExpression;
-import com.loki2302.dom.expression.literal.DOMDoubleLiteralExpression;
-import com.loki2302.dom.expression.literal.DOMIntLiteralExpression;
 import com.loki2302.dom.statement.DOMStatement;
-import com.loki2302.dom.statement.DOMVariableDefinitionStatement;
 import com.loki2302.evaluation.FailureReason;
 import com.loki2302.evaluation.ProgramResult;
+import com.loki2302.parser.Parser;
+import com.loki2302.parser.ParserResult;
 
 public class App {
     public static void main(String[] args) {
-    	List<DOMStatement> domStatements = new ArrayList<DOMStatement>();
+    	Parser parser = new Parser();
+    	ParserResult parserResult = parser.parse("123;");
+    	if(!parserResult.ok) {
+    		System.out.println("parser says it's bad");
+    		return;
+    	}
     	
-    	domStatements.add(new DOMVariableDefinitionStatement(
-    			new DOMNamedTypeDescriptor("int"),
-    			"x",
-    			new DOMAddExpression(
-    					new DOMAddExpression(
-    							new DOMIntLiteralExpression("1"),
-    							new DOMIntLiteralExpression("2")),
-    					new DOMDoubleLiteralExpression("3.14"))
-    			));
+    	System.out.println("parser says it's ok");
     	
-    	DOMProgram domProgram = new DOMProgram(domStatements);    	
+    	DOMProgram domProgram = parserResult.program;
+    	for(DOMStatement statement : domProgram.getStatements()) {
+    		System.out.println(statement);
+    	}
+    	
     	Injector injector = Guice.createInjector();
     	DOMProgramEvaluator domProgramEvaluator = injector.getInstance(DOMProgramEvaluator.class);
     	
