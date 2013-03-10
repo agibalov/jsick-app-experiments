@@ -3,11 +3,17 @@ package com.loki2302;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.loki2302.dom.DOMAddExpression;
-import com.loki2302.dom.DOMDoubleLiteralExpression;
-import com.loki2302.dom.DOMExpression;
-import com.loki2302.dom.DOMExpressionVisitor;
-import com.loki2302.dom.DOMIntLiteralExpression;
+import com.loki2302.dom.expression.DOMAddExpression;
+import com.loki2302.dom.expression.DOMDivExpression;
+import com.loki2302.dom.expression.DOMExpression;
+import com.loki2302.dom.expression.DOMExpressionVisitor;
+import com.loki2302.dom.expression.DOMMulExpression;
+import com.loki2302.dom.expression.DOMSubExpression;
+import com.loki2302.dom.expression.literal.DOMDoubleLiteralExpression;
+import com.loki2302.dom.expression.literal.DOMFalseBoolLiteralExpression;
+import com.loki2302.dom.expression.literal.DOMIntLiteralExpression;
+import com.loki2302.dom.expression.literal.DOMNullLiteralExpression;
+import com.loki2302.dom.expression.literal.DOMTrueBoolLiteralExpression;
 import com.loki2302.evaluation.Context;
 import com.loki2302.evaluation.ExpressionInErrorFailureReason;
 import com.loki2302.evaluation.ExpressionResult;
@@ -67,6 +73,30 @@ public class DOMExpressionEvaluator {
 				}
 				
 				return ExpressionResult.fail(new InternalErrorFailureReason());
+			}
+
+			public ExpressionResult visitSubExpression(DOMSubExpression domExpression) {
+				throw new RuntimeException();
+			}
+
+			public ExpressionResult visitMulExpression(DOMMulExpression domExpression) {
+				throw new RuntimeException();
+			}
+
+			public ExpressionResult visitDivExpression(DOMDivExpression domExpression) {
+				throw new RuntimeException();
+			}
+
+			public ExpressionResult visitNullLiteralExpression(DOMNullLiteralExpression domExpression) {
+				throw new RuntimeException();
+			}
+
+			public ExpressionResult visitTrueBoolLiteralExpression(DOMTrueBoolLiteralExpression domExpression) {
+				throw new RuntimeException();
+			}
+
+			public ExpressionResult visitFalseBoolLiteralExpression(DOMFalseBoolLiteralExpression domExpression) {
+				throw new RuntimeException();
 			}    		
     	});
     }

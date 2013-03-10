@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.google.inject.Inject;
 import com.loki2302.dom.DOMProgram;
-import com.loki2302.dom.DOMStatement;
+import com.loki2302.dom.statement.DOMStatement;
 import com.loki2302.evaluation.Context;
 import com.loki2302.evaluation.FailureReason;
 import com.loki2302.evaluation.ProgramResult;

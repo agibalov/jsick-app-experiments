@@ -1,4 +1,6 @@
-package com.loki2302.dom;
+package com.loki2302.dom.statement;
+
+import com.loki2302.dom.expression.DOMExpression;
 
 public class DOMExpressionStatement implements DOMStatement {		
 	private final DOMExpression expression;

@@ -5,13 +5,13 @@ import java.util.List;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.loki2302.dom.DOMAddExpression;
-import com.loki2302.dom.DOMDoubleLiteralExpression;
-import com.loki2302.dom.DOMIntLiteralExpression;
 import com.loki2302.dom.DOMNamedTypeDescriptor;
 import com.loki2302.dom.DOMProgram;
-import com.loki2302.dom.DOMStatement;
-import com.loki2302.dom.DOMVariableDefinitionStatement;
+import com.loki2302.dom.expression.DOMAddExpression;
+import com.loki2302.dom.expression.literal.DOMDoubleLiteralExpression;
+import com.loki2302.dom.expression.literal.DOMIntLiteralExpression;
+import com.loki2302.dom.statement.DOMStatement;
+import com.loki2302.dom.statement.DOMVariableDefinitionStatement;
 import com.loki2302.evaluation.FailureReason;
 import com.loki2302.evaluation.ProgramResult;
 
@@ -24,9 +24,9 @@ public class App {
     			"x",
     			new DOMAddExpression(
     					new DOMAddExpression(
-    							new DOMIntLiteralExpression(),
-    							new DOMIntLiteralExpression()),
-    					new DOMDoubleLiteralExpression())
+    							new DOMIntLiteralExpression("1"),
+    							new DOMIntLiteralExpression("2")),
+    					new DOMDoubleLiteralExpression("3.14"))
     			));
     	
     	DOMProgram domProgram = new DOMProgram(domStatements);    	
@@ -44,9 +44,3 @@ public class App {
     	}
     }
 }
-
-/*
-int, double, char, string, bool, void, arrays
-functions, structs (by ref)
-predefined funcs: print
-*/

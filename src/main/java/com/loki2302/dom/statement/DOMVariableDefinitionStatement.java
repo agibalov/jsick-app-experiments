@@ -1,4 +1,7 @@
-package com.loki2302.dom;
+package com.loki2302.dom.statement;
+
+import com.loki2302.dom.DOMTypeDescriptor;
+import com.loki2302.dom.expression.DOMExpression;
 
 public class DOMVariableDefinitionStatement implements DOMStatement {
 	private final DOMTypeDescriptor typeDescriptor;
