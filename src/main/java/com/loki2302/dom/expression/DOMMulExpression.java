@@ -1,20 +1,8 @@
 package com.loki2302.dom.expression;
 
-public class DOMMulExpression implements DOMExpression {
-	private final DOMExpression leftExpression;
-	private final DOMExpression rightExpression;
-	
+public class DOMMulExpression extends DOMBinaryExpression {	
 	public DOMMulExpression(DOMExpression leftExpression, DOMExpression rightExpression) {
-		this.leftExpression = leftExpression;
-		this.rightExpression = rightExpression;
-	}
-	
-	public DOMExpression getLeftExpression() {
-		return leftExpression;
-	}
-	
-	public DOMExpression getRightExpression() {
-		return rightExpression;
+		super(leftExpression, rightExpression);
 	}
 
 	public <T> T accept(DOMExpressionVisitor<T> visitor) {
@@ -23,6 +11,6 @@ public class DOMMulExpression implements DOMExpression {
 	
 	@Override
 	public String toString() {
-		return String.format("(%s*%s)", leftExpression, rightExpression);
+		return String.format("(%s*%s)", getLeftExpression(), getRightExpression());
 	}
 }
