@@ -34,6 +34,8 @@ import com.loki2302.dom.expression.literal.DOMFalseBoolLiteralExpression;
 import com.loki2302.dom.expression.literal.DOMIntLiteralExpression;
 import com.loki2302.dom.expression.literal.DOMNullLiteralExpression;
 import com.loki2302.dom.expression.literal.DOMTrueBoolLiteralExpression;
+import com.loki2302.evaluation.BadDoubleLiteralFailureReason;
+import com.loki2302.evaluation.BadIntLiteralFailureReason;
 import com.loki2302.evaluation.Context;
 import com.loki2302.evaluation.ExpressionInErrorFailureReason;
 import com.loki2302.evaluation.ExpressionResult;
@@ -48,12 +50,24 @@ import com.loki2302.program.IntLiteralExpression;
 public class DOMExpressionEvaluator {
     public ExpressionResult evaluateDOMExpression(final Context context, DOMExpression domExpression) {    	
     	return domExpression.accept(new DOMExpressionVisitor<ExpressionResult>() {
-			public ExpressionResult visitIntLiteralExpression(DOMIntLiteralExpression domExpression) {				 
-				return ExpressionResult.ok(new IntLiteralExpression(domExpression, context.intType));
+			public ExpressionResult visitIntLiteralExpression(DOMIntLiteralExpression domExpression) {	
+				String stringValue = domExpression.getStringValue();
+				try {
+					int intValue = Integer.parseInt(stringValue);
+					return ExpressionResult.ok(new IntLiteralExpression(domExpression, context.intType, intValue)); 
+				} catch(NumberFormatException e) {}
+				
+				return ExpressionResult.fail(new BadIntLiteralFailureReason());
 			}
 
 			public ExpressionResult visitDoubleLiteralExpression(DOMDoubleLiteralExpression domExpression) {
-				return ExpressionResult.ok(new DoubleLiteralExpression(domExpression, context.doubleType));
+				String stringValue = domExpression.getStringValue();
+				try {
+					double intValue = Double.parseDouble(stringValue);
+					return ExpressionResult.ok(new DoubleLiteralExpression(domExpression, context.doubleType, intValue)); 
+				} catch(NumberFormatException e) {}
+				
+				return ExpressionResult.fail(new BadDoubleLiteralFailureReason());
 			}
 
 			public ExpressionResult visitAddExpression(DOMAddExpression domExpression) {

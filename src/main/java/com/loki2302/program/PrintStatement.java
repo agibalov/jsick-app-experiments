@@ -10,4 +10,9 @@ public class PrintStatement implements Statement {
 	public Expression getExpression() {
 		return expression;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("print %s", getExpression());
+	}
 }

@@ -6,10 +6,12 @@ import com.loki2302.type.Type;
 public class IntLiteralExpression implements Expression {
 	private final DOMElement domElement;
 	private final Type type;
+	private final int value;
 	
-	public IntLiteralExpression(DOMElement domElement, Type type) {
+	public IntLiteralExpression(DOMElement domElement, Type type, int value) {
 		this.domElement = domElement;
 		this.type = type;		
+		this.value = value;
 	}
 	
 	public DOMElement getDOMElement() {
@@ -20,8 +22,12 @@ public class IntLiteralExpression implements Expression {
 		return type;
 	}
 	
+	public int getValue() {
+		return value;
+	}
+	
 	@Override
 	public String toString() {
-		return String.format("intLiteral");
+		return String.format("int[%d]", value);
 	}
 }
