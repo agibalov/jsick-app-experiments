@@ -47,6 +47,12 @@ public class DOMExpressionEvaluator {
 	@Inject NullLiteralExpressionEvaluator nullLiteralExpressionEvaluator;
 	@Inject TrueLiteralExpressionEvaluator trueLiteralExpressionEvaluator;
 	@Inject FalseLiteralExpressionEvaluator falseLiteralExpressionEvaluator;
+	@Inject LessExpressionEvaluator lessExpressionEvaluator;
+	@Inject LessOrEqualExpressionEvaluator lessOrEqualExpressionEvaluator;
+	@Inject GreaterExpressionEvaluator greaterExpressionEvaluator;
+	@Inject GreaterOrEqualExpressionEvaluator greaterOrEqualExpressionEvaluator;
+	@Inject EqualExpressionEvaluator equalExpressionEvaluator;
+	@Inject NotEqualExpressionEvaluator notEqualExpressionEvaluator;	
 	
 	public ExpressionResult evaluateDOMExpression(final Context context, DOMExpression domExpression) {    	
     	return domExpression.accept(new DOMExpressionVisitor<ExpressionResult>() {
@@ -87,27 +93,27 @@ public class DOMExpressionEvaluator {
 			}
 
 			public ExpressionResult visitLessExpression(DOMLessExpression domExpression) {
-				throw new RuntimeException();
+				return lessExpressionEvaluator.evaluateLessExpression(domExpression);
 			}
 			
 			public ExpressionResult visitLessOrEqualExpression(DOMLessOrEqualExpression domExpression) {
-				throw new RuntimeException();
+				return lessOrEqualExpressionEvaluator.evaluateLessOrEqualExpression(domExpression);
 			}
 			
 			public ExpressionResult visitEqualExpression(DOMEqualExpression domExpression) {
-				throw new RuntimeException();
+				return equalExpressionEvaluator.evaluateEqualExpression(domExpression);
 			}
 			
 			public ExpressionResult visitNotEqualExpression(DOMNotEqualExpression domExpression) {
-				throw new RuntimeException();
+				return notEqualExpressionEvaluator.evaluateNotEqualExpression(domExpression);
 			}
 
 			public ExpressionResult visitGreaterExpression(DOMGreaterExpression domExpression) {
-				throw new RuntimeException();
+				return greaterExpressionEvaluator.evaluateGreaterExpression(domExpression);
 			}
 			
 			public ExpressionResult visitGreaterOrEqualExpression(DOMGreaterOrEqualExpression domExpression) {
-				throw new RuntimeException();
+				return greaterOrEqualExpressionEvaluator.evaluateGreaterOrEqualExpression(domExpression);
 			}
 
 			public ExpressionResult visitAndExpression(DOMAndExpression domExpression) {
