@@ -16,9 +16,12 @@ import com.loki2302.dom.expression.literal.DOMIntLiteralExpression;
 import com.loki2302.dom.expression.literal.DOMNullLiteralExpression;
 import com.loki2302.dom.expression.literal.DOMTrueBoolLiteralExpression;
 import com.loki2302.dom.statement.DOMExpressionStatement;
+import com.loki2302.dom.statement.DOMPrintStatement;
 import com.loki2302.dom.statement.DOMStatement;
 import com.loki2302.dom.statement.DOMVariableDefinitionStatement;
 import com.loki2302.dom.statement.construct.DOMBreakStatement;
+import com.loki2302.dom.statement.construct.DOMContinueStatement;
+import com.loki2302.dom.statement.construct.DOMIfStatement;
 
 public class LanguageParser extends BaseParser<DOMElement> {	
 	public Rule program() {
@@ -33,16 +36,19 @@ public class LanguageParser extends BaseParser<DOMElement> {
 	}	
 	
 	public Rule statement() {
-		return FirstOf(
-				ifStatement(),
-				forStatement(),
-				whileStatement(),
-				doStatement(),
-				continueStatement(),
-				breakStatement(),
-				variableDefinitionStatement(),
-				printStatement(),
-				expressionStatement());
+		return Sequence(
+				optionalGap(),
+				FirstOf(
+					ifStatement(),
+					forStatement(),
+					whileStatement(),
+					doStatement(),
+					continueStatement(),
+					breakStatement(),
+					variableDefinitionStatement(),
+					printStatement(),
+					expressionStatement()),
+				optionalGap());
 	}
 	
 	public Rule variableDefinitionStatement() {
@@ -70,8 +76,14 @@ public class LanguageParser extends BaseParser<DOMElement> {
 						initializerExpression.get())));
 	}
 	
-	public Rule printStatement() {
-		return String("print");
+	public Rule printStatement() {		
+		return Sequence(
+				"print",
+				optionalGap(),
+				"(",
+				expression(),
+				")",
+				push(new DOMPrintStatement((DOMExpression)pop())));
 	}
 	
 	public Rule expressionStatement() {
@@ -81,7 +93,31 @@ public class LanguageParser extends BaseParser<DOMElement> {
 	}
 	
 	public Rule ifStatement() {
-		return String("if");
+		Var<DOMExpression> conditionExpression = new Var<DOMExpression>();
+		Var<DOMStatement> trueBranch = new Var<DOMStatement>();
+		Var<DOMStatement> falseBranch = new Var<DOMStatement>();
+		return Sequence(
+				"if",
+				optionalGap(),
+				"(",
+				Sequence(
+						expression(),
+						conditionExpression.set((DOMExpression)pop())
+				),
+				")",
+				Sequence(
+						statement(),
+						trueBranch.set((DOMStatement)pop())
+						),
+				Optional(
+						"else",
+						Sequence(
+								statement(),
+								falseBranch.set((DOMStatement)pop()))),
+				push(new DOMIfStatement(
+						conditionExpression.get(), 
+						trueBranch.get(), 
+						falseBranch.get())));
 	}
 	
 	public Rule forStatement() {
@@ -99,7 +135,7 @@ public class LanguageParser extends BaseParser<DOMElement> {
 	public Rule continueStatement() {
 		return Sequence(
 				"continue",
-				push(new DOMBreakStatement()));
+				push(new DOMContinueStatement()));
 	}
 	
 	public Rule breakStatement() {
