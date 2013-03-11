@@ -31,26 +31,23 @@ public class LanguageParser extends BaseParser<DOMElement> {
 				OneOrMore(
 						statement(),
 						ACTION(programBuilder.appendStatement((DOMStatement)pop())),
-						";"),
+						statementSepTerm()),
 				EOI,
 				push(programBuilder.build()));
 	}	
 	
 	public Rule statement() {
-		return Sequence(
-				optionalGap(),
-				FirstOf(
-					ifStatement(),
-					forStatement(),
-					whileStatement(),
-					doStatement(),
-					continueStatement(),
-					breakStatement(),
-					variableDefinitionStatement(),
-					printStatement(),
-					expressionStatement()),
-				optionalGap());
-	}
+		return FirstOf(
+				ifStatement(),
+				forStatement(),
+				whileStatement(),
+				doStatement(),
+				continueStatement(),
+				breakStatement(),
+				variableDefinitionStatement(),
+				printStatement(),
+				expressionStatement());
+	}	
 	
 	public Rule variableDefinitionStatement() {
 		Var<DOMTypeDescriptor> typeDescriptor = new Var<DOMTypeDescriptor>();
@@ -64,9 +61,7 @@ public class LanguageParser extends BaseParser<DOMElement> {
 						name(),
 						variableName.set(match())
 						),
-				optionalGap(),
-				'=',
-				optionalGap(),
+				assignmentTerm(),
 				Sequence(
 						expression(),
 						initializerExpression.set((DOMExpression)pop())
@@ -81,9 +76,9 @@ public class LanguageParser extends BaseParser<DOMElement> {
 		return Sequence(
 				"print",
 				optionalGap(),
-				"(",
+				openParensTerm(),
 				expression(),
-				")",
+				closeParensTerm(),
 				push(new DOMPrintStatement((DOMExpression)pop())));
 	}
 	
@@ -98,20 +93,19 @@ public class LanguageParser extends BaseParser<DOMElement> {
 		Var<DOMStatement> trueBranch = new Var<DOMStatement>();
 		Var<DOMStatement> falseBranch = new Var<DOMStatement>();
 		return Sequence(
-				"if",
-				optionalGap(),
-				"(",
+				ifTerm(),
+				openParensTerm(),
 				Sequence(
 						expression(),
 						conditionExpression.set((DOMExpression)pop())
 				),
-				")",
+				closeParensTerm(),
 				Sequence(
 						statement(),
 						trueBranch.set((DOMStatement)pop())
 						),
 				Optional(
-						"else",
+						elseTerm(),
 						Sequence(
 								statement(),
 								falseBranch.set((DOMStatement)pop()))),
@@ -127,24 +121,24 @@ public class LanguageParser extends BaseParser<DOMElement> {
 		Var<DOMStatement> stepStatement = new Var<DOMStatement>();
 		Var<DOMStatement> body = new Var<DOMStatement>();
 		return Sequence(
-				"for",
+				forTerm(),
 				optionalGap(),
-				"(",
+				openParensTerm(),
 				Optional(
 						Sequence(
 								statement(),
 								initializerStatement.set((DOMStatement)pop()))),
-				";",
+				statementSepTerm(),
 				Optional(
 						Sequence(
 								expression(),
 								conditionExpression.set((DOMExpression)pop()))),
-				";",
+				statementSepTerm(),
 				Optional(
 						Sequence(
 								statement(),
 								stepStatement.set((DOMStatement)pop()))),
-				")",
+				closeParensTerm(),
 				Optional(
 						Sequence(
 								statement(),
@@ -166,13 +160,13 @@ public class LanguageParser extends BaseParser<DOMElement> {
 	
 	public Rule continueStatement() {
 		return Sequence(
-				"continue",
+				continueTerm(),
 				push(new DOMContinueStatement()));
 	}
 	
 	public Rule breakStatement() {
 		return Sequence(
-				"break",
+				breakTerm(),
 				push(new DOMBreakStatement()));
 	}
 	
@@ -204,7 +198,7 @@ public class LanguageParser extends BaseParser<DOMElement> {
 	
 	public Rule nullLiteralExpression() {
 		return Sequence(
-				"null",
+				nullTerm(),
 				push(new DOMNullLiteralExpression()));
 	}
 	
@@ -216,13 +210,13 @@ public class LanguageParser extends BaseParser<DOMElement> {
 	
 	public Rule trueLiteralExpression() {
 		return Sequence(
-				"true",
+				trueTerm(),
 				push(new DOMTrueBoolLiteralExpression()));
 	}
 	
 	public Rule falseLiteralExpression() {
 		return Sequence(
-				"false",
+				falseTerm(),
 				push(new DOMFalseBoolLiteralExpression()));
 	}
 	
@@ -246,5 +240,53 @@ public class LanguageParser extends BaseParser<DOMElement> {
 	
 	public Rule gap() {
 		return FirstOf(' ', '\t', '\n', '\r');
+	}
+	
+	public Rule assignmentTerm() {
+		return Sequence(optionalGap(), "=", optionalGap());
+	}
+	
+	public Rule trueTerm() {
+		return Sequence(optionalGap(), "true", optionalGap());
+	}
+	
+	public Rule falseTerm() {
+		return Sequence(optionalGap(), "false", optionalGap());
+	}
+	
+	public Rule nullTerm() {
+		return Sequence(optionalGap(), "null", optionalGap());
+	}
+	
+	public Rule continueTerm() {
+		return Sequence(optionalGap(), "continue", optionalGap());
+	}
+	
+	public Rule breakTerm() {
+		return Sequence(optionalGap(), "break", optionalGap());
+	}
+	
+	public Rule forTerm() {
+		return Sequence(optionalGap(), "for", optionalGap());
+	}
+	
+	public Rule ifTerm() {
+		return Sequence(optionalGap(), "if", optionalGap());
+	}
+	
+	public Rule elseTerm() {
+		return Sequence(optionalGap(), "else", optionalGap());
+	}
+	
+	public Rule statementSepTerm() {
+		return Sequence(optionalGap(), ";", optionalGap());
+	}
+	
+	public Rule openParensTerm() {
+		return Sequence(optionalGap(), "(", optionalGap());
+	}
+	
+	public Rule closeParensTerm() {
+		return Sequence(optionalGap(), ")", optionalGap());
 	}
 }
