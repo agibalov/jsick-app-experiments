@@ -36,8 +36,7 @@ import com.loki2302.dom.expression.literal.DOMTrueBoolLiteralExpression;
 import com.loki2302.evaluation.Context;
 import com.loki2302.evaluation.ExpressionResult;
 
-public class DOMExpressionEvaluator {
-	
+public class DOMExpressionEvaluator {	
 	@Inject IntLiteralExpressionEvaluator intLiteralExpressionEvaluator;
 	@Inject DoubleLiteralExpressionEvaluator doubleLiteralExpressionEvaluator;
 	@Inject AddExpressionEvaluator addExpressionEvaluator;
@@ -53,6 +52,20 @@ public class DOMExpressionEvaluator {
 	@Inject GreaterOrEqualExpressionEvaluator greaterOrEqualExpressionEvaluator;
 	@Inject EqualExpressionEvaluator equalExpressionEvaluator;
 	@Inject NotEqualExpressionEvaluator notEqualExpressionEvaluator;	
+	@Inject NotExpressionEvaluator notExpressionEvaluator;
+	@Inject AndExpressionEvaluator andExpressionEvaluator;
+	@Inject OrExpressionEvaluator orExpressionEvaluator;
+	@Inject MinusSignExpressionEvaluator minusSignExpressionEvaluator;
+	@Inject PlusSignExpressionEvaluator plusSignExpressionEvaluator;
+	@Inject PrefixIncrementExpressionEvaluator prefixIncrementExpressionEvaluator;
+	@Inject PostfixIncrementExpressionEvaluator postfixIncrementExpressionEvaluator;
+	@Inject PrefixDecrementExpressionEvaluator prefixDecrementExpressionEvaluator;
+	@Inject PostfixDecrementExpressionEvaluator postfixDecrementExpressionEvaluator;
+	@Inject AssignmentExpressionEvaluator assignmentExpressionEvaluator;
+	@Inject AddAndAssignExpressionEvaluator addAndAssignExpressionEvaluator;
+	@Inject SubAndAssignExpressionEvaluator subAndAssignExpressionEvaluator;
+	@Inject MulAndAssignExpressionEvaluator mulAndAssignExpressionEvaluator;
+	@Inject DivAndAssignExpressionEvaluator divAndAssignExpressionEvaluator;
 	
 	public ExpressionResult evaluateDOMExpression(final Context context, DOMExpression domExpression) {    	
     	return domExpression.accept(new DOMExpressionVisitor<ExpressionResult>() {
@@ -117,59 +130,59 @@ public class DOMExpressionEvaluator {
 			}
 
 			public ExpressionResult visitAndExpression(DOMAndExpression domExpression) {
-				throw new RuntimeException();
+				return andExpressionEvaluator.evaluateAndExpression(domExpression);
 			}
 
 			public ExpressionResult visitOrExpression(DOMOrExpression domExpression) {
-				throw new RuntimeException();
+				return orExpressionEvaluator.evaluateOrExpression(domExpression);
 			}
 
 			public ExpressionResult visitNotExpression(DOMNotExpression domExpression) {
-				throw new RuntimeException();
+				return notExpressionEvaluator.evaluateNotExpression(domExpression);
 			}
 			
 			public ExpressionResult visitMinusSignExpression(DOMMinusSignExpression domExpression) {
-				throw new RuntimeException();
+				return minusSignExpressionEvaluator.evaluateMinusSignExpression(domExpression);
 			}
 
 			public ExpressionResult visitPlusSignExpression(DOMPlusSignExpression domExpression) {
-				throw new RuntimeException();
+				return plusSignExpressionEvaluator.evaluatePlusSignExpression(domExpression);
 			}
 			
 			public ExpressionResult visitPrefixIncrementExpression(DOMPrefixIncrementExpression domExpression) {
-				throw new RuntimeException();
+				return prefixIncrementExpressionEvaluator.evaluatePrefixIncrementExpression(domExpression);
 			}
 			
 			public ExpressionResult visitPostfixIncrementExpression(DOMPostfixIncrementExpression domExpression) {
-				throw new RuntimeException();
+				return postfixIncrementExpressionEvaluator.evaluatePostfixIncrementExpression(domExpression);
 			}
 
 			public ExpressionResult visitPrefixDecrementExpression(DOMPrefixDecrementExpression domExpression) {
-				throw new RuntimeException();
+				return prefixDecrementExpressionEvaluator.evaluatePrefixDecrementExpression(domExpression);
 			}
 
 			public ExpressionResult visitPostfixDecrementExpression(DOMPostfixDecrementExpression domExpression) {
-				throw new RuntimeException();
+				return postfixDecrementExpressionEvaluator.evaluatePostfixDecrementExpression(domExpression);
 			}
 
 			public ExpressionResult visitAddAndAssignExpression(DOMAddAndAssignExpression domExpression) {
-				throw new RuntimeException();
+				return addAndAssignExpressionEvaluator.evaluateAddAndAssignExpression(domExpression);
 			}
 
 			public ExpressionResult visitSubAndAssignExpression(DOMSubAndAssignExpression domExpression) {
-				throw new RuntimeException();
+				return subAndAssignExpressionEvaluator.evaluateSubAndAssignExpression(domExpression);
 			}
 			
 			public ExpressionResult visitMulAndAssignExpression(DOMMulAndAssignExpression domExpression) {
-				throw new RuntimeException();
+				return mulAndAssignExpressionEvaluator.evaluateMulAndAssignExpression(domExpression);
 			}
 			
 			public ExpressionResult visitDivAndAssignExpression(DOMDivAndAssignExpression domExpression) {
-				throw new RuntimeException();
+				return divAndAssignExpressionEvaluator.evaluateDivAndAssignExpression(domExpression);
 			}
 			
 			public ExpressionResult visitAssignmentExpression(DOMAssignmentExpression domExpression) {
-				throw new RuntimeException();
+				return assignmentExpressionEvaluator.evaluateAssignmentExpression(domExpression);
 			}    		
     	});
     }
