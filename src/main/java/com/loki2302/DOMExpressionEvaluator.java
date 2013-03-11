@@ -1,8 +1,7 @@
 package com.loki2302;
 
-import java.util.ArrayList;
-import java.util.List;
 
+import com.google.inject.Inject;
 import com.loki2302.dom.expression.DOMAddAndAssignExpression;
 import com.loki2302.dom.expression.DOMAddExpression;
 import com.loki2302.dom.expression.DOMAndExpression;
@@ -34,103 +33,57 @@ import com.loki2302.dom.expression.literal.DOMFalseBoolLiteralExpression;
 import com.loki2302.dom.expression.literal.DOMIntLiteralExpression;
 import com.loki2302.dom.expression.literal.DOMNullLiteralExpression;
 import com.loki2302.dom.expression.literal.DOMTrueBoolLiteralExpression;
-import com.loki2302.evaluation.BadDoubleLiteralFailureReason;
-import com.loki2302.evaluation.BadIntLiteralFailureReason;
 import com.loki2302.evaluation.Context;
-import com.loki2302.evaluation.ExpressionInErrorFailureReason;
 import com.loki2302.evaluation.ExpressionResult;
-import com.loki2302.evaluation.FailureReason;
-import com.loki2302.evaluation.InternalErrorFailureReason;
-import com.loki2302.program.AddExpression;
-import com.loki2302.program.CastExpression;
-import com.loki2302.program.DoubleLiteralExpression;
-import com.loki2302.program.Expression;
-import com.loki2302.program.IntLiteralExpression;
 
 public class DOMExpressionEvaluator {
-    public ExpressionResult evaluateDOMExpression(final Context context, DOMExpression domExpression) {    	
+	
+	@Inject IntLiteralExpressionEvaluator intLiteralExpressionEvaluator;
+	@Inject DoubleLiteralExpressionEvaluator doubleLiteralExpressionEvaluator;
+	@Inject AddExpressionEvaluator addExpressionEvaluator;
+	@Inject SubExpressionEvaluator subExpressionEvaluator;
+	@Inject MulExpressionEvaluator mulExpressionEvaluator;
+	@Inject DivExpressionEvaluator divExpressionEvaluator;
+	@Inject NullLiteralExpressionEvaluator nullLiteralExpressionEvaluator;
+	@Inject TrueLiteralExpressionEvaluator trueLiteralExpressionEvaluator;
+	@Inject FalseLiteralExpressionEvaluator falseLiteralExpressionEvaluator;
+	
+	public ExpressionResult evaluateDOMExpression(final Context context, DOMExpression domExpression) {    	
     	return domExpression.accept(new DOMExpressionVisitor<ExpressionResult>() {
 			public ExpressionResult visitIntLiteralExpression(DOMIntLiteralExpression domExpression) {	
-				String stringValue = domExpression.getStringValue();
-				try {
-					int intValue = Integer.parseInt(stringValue);
-					return ExpressionResult.ok(new IntLiteralExpression(domExpression, context.intType, intValue)); 
-				} catch(NumberFormatException e) {}
-				
-				return ExpressionResult.fail(new BadIntLiteralFailureReason());
+				return intLiteralExpressionEvaluator.evaluateIntLiteralExpression(context, domExpression);
 			}
 
 			public ExpressionResult visitDoubleLiteralExpression(DOMDoubleLiteralExpression domExpression) {
-				String stringValue = domExpression.getStringValue();
-				try {
-					double intValue = Double.parseDouble(stringValue);
-					return ExpressionResult.ok(new DoubleLiteralExpression(domExpression, context.doubleType, intValue)); 
-				} catch(NumberFormatException e) {}
-				
-				return ExpressionResult.fail(new BadDoubleLiteralFailureReason());
+				return doubleLiteralExpressionEvaluator.evaluateDoubleLiteralExpression(context, domExpression);
 			}
 
 			public ExpressionResult visitAddExpression(DOMAddExpression domExpression) {
-				ExpressionResult leftResult = domExpression.getLeftExpression().accept(this);
-				ExpressionResult rightResult = domExpression.getRightExpression().accept(this);
-				
-				List<FailureReason> reasons = new ArrayList<FailureReason>();
-				if(!leftResult.ok) {
-					reasons.add(new ExpressionInErrorFailureReason(leftResult));
-				}
-				
-				if(!rightResult.ok) {
-					reasons.add(new ExpressionInErrorFailureReason(rightResult));
-				}
-				
-				if(!reasons.isEmpty()) {
-					return ExpressionResult.fail(reasons);
-				}
-				
-				Expression left = leftResult.expression;
-				Expression right = rightResult.expression;
-				
-				if(left.getType() == right.getType()) {
-					return ExpressionResult.ok(new AddExpression(domExpression, left.getType(), left, right));
-				} else if(left.getType() == context.intType && right.getType() == context.doubleType) {
-					return ExpressionResult.ok(new AddExpression(
-							domExpression,
-							right.getType(), 
-							new CastExpression(domExpression.getLeftExpression(), left, right.getType()), 
-							right));
-				} else if(left.getType() == context.doubleType && right.getType() == context.intType) {
-					return ExpressionResult.ok(new AddExpression(
-							domExpression,
-							left.getType(), 
-							left, 
-							new CastExpression(domExpression.getRightExpression(), right, left.getType())));
-				}
-				
-				return ExpressionResult.fail(new InternalErrorFailureReason());
+				return addExpressionEvaluator.evaluateAddExpression(context, domExpression, DOMExpressionEvaluator.this);
 			}
 
 			public ExpressionResult visitSubExpression(DOMSubExpression domExpression) {
-				throw new RuntimeException();
+				return subExpressionEvaluator.evaluateSubExpression(domExpression);
 			}
 
 			public ExpressionResult visitMulExpression(DOMMulExpression domExpression) {
-				throw new RuntimeException();
+				return mulExpressionEvaluator.evaluateMulExpression(domExpression);
 			}
 
 			public ExpressionResult visitDivExpression(DOMDivExpression domExpression) {
-				throw new RuntimeException();
+				return divExpressionEvaluator.evaluateDivExpression(domExpression);
 			}
 
 			public ExpressionResult visitNullLiteralExpression(DOMNullLiteralExpression domExpression) {
-				throw new RuntimeException();
+				return nullLiteralExpressionEvaluator.evaluateNullLiteralExpression(domExpression);
 			}
 
 			public ExpressionResult visitTrueBoolLiteralExpression(DOMTrueBoolLiteralExpression domExpression) {
-				throw new RuntimeException();
+				return trueLiteralExpressionEvaluator.evaluateTrueLiteralExpression(domExpression);
 			}
 
 			public ExpressionResult visitFalseBoolLiteralExpression(DOMFalseBoolLiteralExpression domExpression) {
-				throw new RuntimeException();
+				return falseLiteralExpressionEvaluator.evaluateFalseLiteralExpression(domExpression);
 			}
 
 			public ExpressionResult visitLessExpression(DOMLessExpression domExpression) {
