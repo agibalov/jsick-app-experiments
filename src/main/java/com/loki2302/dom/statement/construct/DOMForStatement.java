@@ -6,13 +6,13 @@ import com.loki2302.dom.statement.DOMStatementVisitor;
 import com.loki2302.dom.statement.DOMVariableDefinitionStatement;
 
 public class DOMForStatement implements DOMStatement {
-	private final DOMVariableDefinitionStatement initializerStatement;
+	private final DOMStatement initializerStatement;
 	private final DOMExpression conditionExpression;
 	private final DOMStatement stepStatement;
 	private final DOMStatement bodyStatement;
 	
 	public DOMForStatement(
-			DOMVariableDefinitionStatement initializerStatement,
+			DOMStatement initializerStatement,
 			DOMExpression conditionExpression,
 			DOMStatement stepStatement,
 			DOMStatement bodyStatement) {
@@ -22,7 +22,7 @@ public class DOMForStatement implements DOMStatement {
 		this.bodyStatement = bodyStatement;
 	}
 	
-	public DOMVariableDefinitionStatement getInitializerStatement() {
+	public DOMStatement getInitializerStatement() {
 		return initializerStatement;
 	}
 	

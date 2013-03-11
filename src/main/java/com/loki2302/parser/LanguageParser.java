@@ -21,6 +21,7 @@ import com.loki2302.dom.statement.DOMStatement;
 import com.loki2302.dom.statement.DOMVariableDefinitionStatement;
 import com.loki2302.dom.statement.construct.DOMBreakStatement;
 import com.loki2302.dom.statement.construct.DOMContinueStatement;
+import com.loki2302.dom.statement.construct.DOMForStatement;
 import com.loki2302.dom.statement.construct.DOMIfStatement;
 
 public class LanguageParser extends BaseParser<DOMElement> {	
@@ -121,7 +122,38 @@ public class LanguageParser extends BaseParser<DOMElement> {
 	}
 	
 	public Rule forStatement() {
-		return String("for");
+		Var<DOMStatement> initializerStatement = new Var<DOMStatement>();
+		Var<DOMExpression> conditionExpression = new Var<DOMExpression>();
+		Var<DOMStatement> stepStatement = new Var<DOMStatement>();
+		Var<DOMStatement> body = new Var<DOMStatement>();
+		return Sequence(
+				"for",
+				optionalGap(),
+				"(",
+				Optional(
+						Sequence(
+								statement(),
+								initializerStatement.set((DOMStatement)pop()))),
+				";",
+				Optional(
+						Sequence(
+								expression(),
+								conditionExpression.set((DOMExpression)pop()))),
+				";",
+				Optional(
+						Sequence(
+								statement(),
+								stepStatement.set((DOMStatement)pop()))),
+				")",
+				Optional(
+						Sequence(
+								statement(),
+								body.set((DOMStatement)pop()))),
+				push(new DOMForStatement(
+						initializerStatement.get(), 
+						conditionExpression.get(), 
+						stepStatement.get(), 
+						body.get())));
 	}
 	
 	public Rule whileStatement() {
