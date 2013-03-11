@@ -74,7 +74,7 @@ public class LanguageParser extends BaseParser<DOMElement> {
 	
 	public Rule printStatement() {		
 		return Sequence(
-				"print",
+				printTerm(),
 				optionalGap(),
 				openParensTerm(),
 				expression(),
@@ -151,11 +151,11 @@ public class LanguageParser extends BaseParser<DOMElement> {
 	}
 	
 	public Rule whileStatement() {
-		return String("while");
+		return whileTerm();
 	}
 	
 	public Rule doStatement() {
-		return String("do");
+		return doTerm();
 	}
 	
 	public Rule continueStatement() {
@@ -276,6 +276,18 @@ public class LanguageParser extends BaseParser<DOMElement> {
 	
 	public Rule elseTerm() {
 		return Sequence(optionalGap(), "else", optionalGap());
+	}
+	
+	public Rule whileTerm() {
+		return Sequence(optionalGap(), "while", optionalGap());
+	}
+	
+	public Rule doTerm() {
+		return Sequence(optionalGap(), "do", optionalGap());
+	}
+	
+	public Rule printTerm() {
+		return Sequence(optionalGap(), "print", optionalGap());
 	}
 	
 	public Rule statementSepTerm() {

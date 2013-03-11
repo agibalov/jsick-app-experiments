@@ -15,5 +15,25 @@ public interface DOMExpressionVisitor<T> {
 	T visitDivExpression(DOMDivExpression domExpression);
 	T visitNullLiteralExpression(DOMNullLiteralExpression domExpression);
 	T visitTrueBoolLiteralExpression(DOMTrueBoolLiteralExpression domExpression);
-	T visitFalseBoolLiteralExpression(DOMFalseBoolLiteralExpression domExpression);
+	T visitFalseBoolLiteralExpression(DOMFalseBoolLiteralExpression domExpression);	
+	T visitLessExpression(DOMLessExpression domExpression);
+	T visitLessOrEqualExpression(DOMLessOrEqualExpression domExpression);
+	T visitEqualExpression(DOMEqualExpression domExpression);
+	T visitNotEqualExpression(DOMNotEqualExpression domExpression);
+	T visitGreaterExpression(DOMGreaterExpression domExpression);
+	T visitGreaterOrEqualExpression(DOMGreaterOrEqualExpression domExpression);
+	T visitAndExpression(DOMAndExpression domExpression);
+	T visitOrExpression(DOMOrExpression domExpression);
+	T visitNotExpression(DOMNotExpression domExpression);
+	T visitMinusSignExpression(DOMMinusSignExpression domExpression);
+	T visitPlusSignExpression(DOMPlusSignExpression domExpression);
+	T visitPrefixIncrementExpression(DOMPrefixIncrementExpression domExpression);
+	T visitPostfixIncrementExpression(DOMPostfixIncrementExpression domExpression);
+	T visitPrefixDecrementExpression(DOMPrefixDecrementExpression domExpression);
+	T visitPostfixDecrementExpression(DOMPostfixDecrementExpression domExpression);
+	T visitAddAndAssignExpression(DOMAddAndAssignExpression domExpression);
+	T visitSubAndAssignExpression(DOMSubAndAssignExpression domExpression);
+	T visitMulAndAssignExpression(DOMMulAndAssignExpression domExpression);
+	T visitDivAndAssignExpression(DOMDivAndAssignExpression domExpression);
+	T visitAssignmentExpression(DOMAssignmentExpression domExpression);
 }
