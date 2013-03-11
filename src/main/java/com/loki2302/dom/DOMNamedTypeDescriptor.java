@@ -1,6 +1,5 @@
 package com.loki2302.dom;
 
-
 public class DOMNamedTypeDescriptor implements DOMTypeDescriptor {
 	private final String typeName;
 	

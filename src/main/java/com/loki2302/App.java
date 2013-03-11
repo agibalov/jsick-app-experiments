@@ -13,7 +13,7 @@ import com.loki2302.program.Statement;
 public class App {
     public static void main(String[] args) {
     	Parser parser = new Parser();
-    	ParserResult parserResult = parser.parse("123;222;");
+    	ParserResult parserResult = parser.parse("int x = 1;");
     	if(!parserResult.ok) {
     		System.out.println("parser says it's bad");
     		return;

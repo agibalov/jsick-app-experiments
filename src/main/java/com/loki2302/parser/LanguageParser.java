@@ -3,8 +3,12 @@ package com.loki2302.parser;
 
 import org.parboiled.BaseParser;
 import org.parboiled.Rule;
+import org.parboiled.support.StringVar;
+import org.parboiled.support.Var;
 
 import com.loki2302.dom.DOMElement;
+import com.loki2302.dom.DOMNamedTypeDescriptor;
+import com.loki2302.dom.DOMTypeDescriptor;
 import com.loki2302.dom.expression.DOMExpression;
 import com.loki2302.dom.expression.literal.DOMDoubleLiteralExpression;
 import com.loki2302.dom.expression.literal.DOMFalseBoolLiteralExpression;
@@ -13,6 +17,7 @@ import com.loki2302.dom.expression.literal.DOMNullLiteralExpression;
 import com.loki2302.dom.expression.literal.DOMTrueBoolLiteralExpression;
 import com.loki2302.dom.statement.DOMExpressionStatement;
 import com.loki2302.dom.statement.DOMStatement;
+import com.loki2302.dom.statement.DOMVariableDefinitionStatement;
 import com.loki2302.dom.statement.construct.DOMBreakStatement;
 
 public class LanguageParser extends BaseParser<DOMElement> {	
@@ -41,7 +46,28 @@ public class LanguageParser extends BaseParser<DOMElement> {
 	}
 	
 	public Rule variableDefinitionStatement() {
-		return String("vardef");
+		Var<DOMTypeDescriptor> typeDescriptor = new Var<DOMTypeDescriptor>();
+		StringVar variableName = new StringVar();
+		Var<DOMExpression> initializerExpression = new Var<DOMExpression>();
+		return Sequence(
+				typeName(),
+				typeDescriptor.set((DOMTypeDescriptor)pop()),
+				mandatoryGap(),
+				Sequence(
+						name(),
+						variableName.set(match())
+						),
+				optionalGap(),
+				'=',
+				optionalGap(),
+				Sequence(
+						expression(),
+						initializerExpression.set((DOMExpression)pop())
+						),
+				push(new DOMVariableDefinitionStatement(
+						typeDescriptor.get(), 
+						variableName.get(), 
+						initializerExpression.get())));
 	}
 	
 	public Rule printStatement() {
@@ -130,5 +156,27 @@ public class LanguageParser extends BaseParser<DOMElement> {
 		return Sequence(
 				"false",
 				push(new DOMFalseBoolLiteralExpression()));
+	}
+	
+	public Rule typeName() {
+		return Sequence(
+				name(),
+				push(new DOMNamedTypeDescriptor(match())));
+	}
+	
+	public Rule name() {
+		return OneOrMore(CharRange('a', 'z'));
+	}
+	
+	public Rule mandatoryGap() {
+		return OneOrMore(gap());
+	}
+	
+	public Rule optionalGap() {
+		return ZeroOrMore(gap());
+	}
+	
+	public Rule gap() {
+		return FirstOf(' ', '\t', '\n', '\r');
 	}
 }
